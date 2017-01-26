@@ -37,5 +37,38 @@ var TinyTester = {
         TinyTestHelper.renderStats(tests, failures);
       }
     }, 0);
+  },
+
+  fail: function(message) {
+    throw new Error('fail(): ' + message);
+  },
+
+  assert: function(value, message) {
+    if (!value) {
+      throw new Error('assert(): ' + message);
+    }
+  },
+
+  assertEquals: function(expected, actual) {
+    if (expected !== actual) {
+      throw new Error('assertEquals() "' + expected + '" !== "' + actual + '"');
+    }
+  },
+
+  assertStrictEquals: function(expected, actual) {
+    if (expected !== actual) {
+      throw new Error('assertStrictEquals() "' + expected + '" !== "' + actual + '"');
+    }
   }
 };
+
+
+
+
+
+
+
+
+
+
+
