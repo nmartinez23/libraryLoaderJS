@@ -1,2 +1,35 @@
 <script src="tinyTester.js"></script>
 <script>
+
+(function() {
+
+  var libStorage = {};
+
+  function libraryLoader(libName, dependencies, cb) {
+    var libraries = [];
+
+    if ( arguments.length > 1 ) {
+      dependencies.forEach(function(dependency) {
+        libraries.push(libStorage[dependency]);
+      })
+
+      libStorage[libName] = cb.apply(this, libraries);
+
+    } else {
+      return libStorage[libName];
+    };
+  }
+
+  window.libraryLoader = libraryLoader;
+})();
+
+
+
+tests({
+
+});
+
+
+
+
+</script>
