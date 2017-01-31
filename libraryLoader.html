@@ -1,24 +1,46 @@
 <script src="tinyTester.js"></script>
 <script>
+// Ability to load library in any order and an array of nested dependencies.
 
 (function() {
 
   var libStorage = {};
 
   function libraryLoader(libName, dependencies, cb) {
-    var libraries = [];
-
-    if ( arguments.length > 1 ) {
-      dependencies.forEach(function(dependency) {
-        libraries.push(libStorage[dependency]);
-      })
-
-      libStorage[libName] = cb.apply(this, libraries);
-
+    if (arguments.length > 1) {
+      libStorage[libName] = {
+        library: cb,
+        dependencies: dependencies,
+        cached: false
+      }
     } else {
-      return libStorage[libName];
+      return nestedDependencies(libName);
     };
   }
+
+  function nestedDependencies(libName) {
+    var dependencies = [];
+    var libraries = libStorage[libName];
+
+    if (typeof libraries === 'undefined') {
+      throw new Error('Library or dependencies missing for ' + libName);
+    }
+
+    if (libraries.dependencies.length) {
+      dependencies = libraries.dependencies.map(function(dependency) {
+        return nestedDependencies(dependency);
+      });
+    }
+
+    if (libraries.cached) {
+      return libraries.cache;
+    }
+
+    var result = libraries.library.apply(null, dependencies);
+    libraries.cached = true;
+    libraries.cache = result;
+    return result;
+  };
 
   window.libraryLoader = libraryLoader;
 })();
