@@ -48,6 +48,57 @@
 
 
 tests({
+  'it should take a library name and a function that returns the library as arguments and store them': function() {
+    libraryLoader('app', [], function() {
+      return 'app';
+    });
+
+    eq(libraryLoader('app'), 'app');
+  },
+
+  'it should handle a library with dependencies when added in order': function() {
+    libraryLoader('dependency', [], function() {
+      return 'loaded dependency';
+    });
+
+    libraryLoader('app', ['dependency'], function(dependency) {
+      return 'app with ' + dependency;
+    });
+
+    eq(libraryLoader('app'), 'app with loaded dependency');
+  },
+
+  'it should handle a library with 0 dependencies': function() {
+    libraryLoader('name', [], function() {
+      return 'Nick';
+    });
+
+    eq(libraryLoader('name'), 'Nick');
+  },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 });
 
