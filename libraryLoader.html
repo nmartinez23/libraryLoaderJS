@@ -108,6 +108,41 @@ tests({
     eq(libraryLoader('joinDependencies'), 'Nick continues to wrap his head around Javascript');
   },
 
+  'it should handle multiple levels of nested dependencies': function() {
+    libraryLoader('app', ['dependency'], function(dependency) {
+      return 'app with ' + dependency;
+    });
+
+    libraryLoader('dependency', ['app2'], function(app2) {
+      return 'loaded dependency with ' + app2;
+    });
+
+    libraryLoader('app2', ['app3'], function(app3) {
+      return 'app2 with ' + app3;
+    });
+
+    libraryLoader('app4a', [], function() {
+      return 'app4a';
+    });
+
+    libraryLoader('app4b', [], function() {
+      return 'app4b';
+    });
+
+    libraryLoader('app3', ['app4a', 'app4b'], function(app4a, app4b) {
+      return 'app3 with ' + app4a + ' and ' + app4b;
+    });
+
+    eq(libraryLoader('app'), 'app with loaded dependency with app2 with app3 with app4a and app4b');
+  },
+
+  'It should be able to load and retrieve a library': function() {
+    libraryLoader('app', [], function app() {
+      return 'I am the app';
+    });
+
+    eq(libraryLoader('app'), 'I am the app');
+  }
 });
 
 
