@@ -76,31 +76,55 @@ tests({
     eq(libraryLoader('name'), 'Nick');
   },
 
+  'it should handle a library with multiple dependencies': function() {
+    libraryLoader('name', [], function() {
+      return 'Nick ';
+    });
 
+    libraryLoader('learning', [], function() {
+      return 'continues to wrap his head around Javascript';
+    });
 
+    libraryLoader('joinDependencies', ['name', 'learning'], function(name, learning) {
+      return name + learning;
+    });
 
+    eq(libraryLoader('joinDependencies'), 'Nick continues to wrap his head around Javascript');
+  },
 
+  'it should handle adding libraries out of order': function() {
+    libraryLoader('joinDependencies', ['name', 'learning'], function(name, learning) {
+      return name + learning;
+    });
 
+    libraryLoader('learning', [], function() {
+      return 'continues to wrap his head around Javascript';
+    });
 
+    libraryLoader('name', [], function() {
+      return 'Nick ';
+    });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    eq(libraryLoader('joinDependencies'), 'Nick continues to wrap his head around Javascript');
+  },
 
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
